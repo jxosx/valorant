@@ -1,0 +1,35 @@
+bool hotkeyPressed;     //if your hotkey is pressed set to true
+bool silentAim = false; //if false do instaflick, if true do silent aim
+ 
+float distance = 2.5f;  //flick distance
+int fovX = 100;         //flick fov
+int fovY = 50;
+int delay = 250;        //delay between flicks / shots
+DateTime lastFlick;     //last time the bot shot at an enemy
+ 
+while (hotkeyPressed) 
+{
+    //if enemy in fov...
+    if (Math.Abs(enemy.X) < fovX && Math.Abs(enemy.Y) < fovY)
+    {   
+         //if last flick was longer than (delay) milliseconds ago... 
+         if ((DateTime.Now - lastFlick).TotalMilliseconds > delay)
+         {
+                //create vector to aim at
+                var move = new Vector2(enemy.X * distance, enemy.Y * distance);
+                
+                //instaflick to target
+                Mouse.Move(move.X, move.Y);
+ 
+                //shoot
+                Mouse.Click(); //I recommend using random delays between press and release
+ 
+                //flick back to original position if silentAim = true
+                if (silentAim)
+                    Mouse.Move(-move.X, -move.Y);
+ 
+                //update lastFlick
+                lastFlick = DateTime.Now;
+          }
+     }
+}
